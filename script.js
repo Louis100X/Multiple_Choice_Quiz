@@ -37,24 +37,24 @@ function renderQuestion() {
     var titleEl = document.querySelector(".title");
     var choicesEl = document.querySelector(".buttons");
     //Remove old hoices inserted into HTML button text
-    choicesEl.innerHTML="";
+    choicesEl.innerHTML = "";
 
     //Creating button elements, assigning: text; attributes, and appendingChild to HTML parent
     titleEl.textContent = title;
-    for(var i = 0; i < choices.length; i++) {
+    for (var i = 0; i < choices.length; i++) {
         var btn = document.createElement("button");
         btn.textContent = choices[i];
         btn.setAttribute("class", "choice")
         choicesEl.appendChild(btn);
     }
 }
-
-document.addEventListener("click", function(e) {
+// function handles the button clicked by user and generates the next question
+document.addEventListener("click", function (e) {
     var target = e.target;
     console.log(target.classList.contains("choice"));
     if (target.classList.contains("choice")) {
         var correctAnswer = questions[round].answer;
-        if ( correctAnswer == target.textContent) {
+        if (correctAnswer == target.textContent) {
             alert("Correct!");
             score++;
         }
@@ -62,7 +62,17 @@ document.addEventListener("click", function(e) {
             alert("Incorrect!")
         }
         round++;
-        renderQuestion();
+        if (round < questions.length) {
+            renderQuestion();
+        }
+        // Hides questions after final question in array is completed and renders the previously hidden form for user initials
+        else {
+            var eraseQuestionArea = document.querySelector(".questionArea");
+            eraseQuestionArea.style.display = 'none';
+            var showHighScore = document.querySelector(".submitHighScore");
+            showHighScore.style.display = 'block';
+        }
+        // renderQuestion();
         // Now you need to compare the text content of this element against the correct answer in your questions array
         // You do this using the round variable like above
         // Correct answer = questions[round].answer
@@ -72,16 +82,17 @@ document.addEventListener("click", function(e) {
     }
 })
 
-renderQuestion()
+// renderQuestion()
 
 
 
-
+// initialize timer upon pressing the start button, launch function renderQuestion()
 var count = 75
 var startq = document.getElementById("startQ")
 
 startq.addEventListener("click", function (e) {
     e.preventDefault()
+    renderQuestion();
     document.getElementById('startDiv').style.display = 'none';
     var interval = setInterval(function () {
         document.getElementById('count').innerHTML = count;
@@ -93,7 +104,6 @@ startq.addEventListener("click", function (e) {
             alert("You're out of time!");
         }
     }, 1000);
-    
-    interval()
+
 
 })
